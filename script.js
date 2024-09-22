@@ -44,24 +44,24 @@ const createMovieCard = (movie, index) => {
     card.innerHTML = `
         <div class="movie-poster-container">
             ${imageUrl
-            ? `<img src="${imageUrl}" alt="${movie.title}" class="movie-poster" loading="lazy">`
+            ? `<img src="${imageUrl}" alt="${movie.title || movie.name}" class="movie-poster" loading="lazy">`
             : `<div class="movie-poster placeholder-poster">
                     <i class="fas fa-film fa-4x"></i>
                    </div>`
         }
             <div class="movie-rating">${movie.vote_average?.toFixed(1)}</div>
-            <button class="trailer-btn">Watch Movie</button>
+            <button class="trailer-btn">Watch ${movie.media_type === 'tv' ? 'Show' : 'Movie'}</button>
         </div>
         <div class="movie-info">
-            <h3 class="movie-title">${movie.title}</h3>
-            <p class="text-sm text-gray-300 mb-2">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</p>
+            <h3 class="movie-title">${movie.title || movie.name}</h3>
+            <p class="text-sm text-gray-300 mb-2">${movie.release_date || movie.first_air_date ? (movie.release_date || movie.first_air_date).split('-')[0] : 'N/A'}</p>
             <p class="text-sm text-gray-400">${movie.overview ? movie.overview.slice(0, 100) + '...' : 'No overview available'}</p>
         </div>
     `;
 
     card.querySelector('.trailer-btn').addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = `details.html?type=movie&id=${movie.id}`;
+        window.location.href = `details.html?type=${movie.media_type || 'movie'}&id=${movie.id}`;
     });
 
     return card;
@@ -106,7 +106,7 @@ let searchQuery = '';
 
 const buildMovieUrl = () => {
     if (searchQuery) {
-        return `${BASE_URL}/search/movie?query=${encodeURIComponent(searchQuery)}&language=en-US`;
+        return `${BASE_URL}/search/multi?query=${encodeURIComponent(searchQuery)}&language=en-US`;
     } else if (currentGenre) {
         return `${BASE_URL}/discover/movie?with_genres=${currentGenre}&language=en-US`;
     } else {
@@ -136,19 +136,21 @@ const loadActionMovies = async () => {
             movieContainer.innerHTML = ''; // Clear existing movies only on the first page
         }
 
-        data.results.forEach((movie, index) => {
-            movieContainer.appendChild(createMovieCard(movie, index));
+        data.results.forEach((item, index) => {
+            if (item.media_type === 'movie' || item.media_type === 'tv' || !item.media_type) {
+                movieContainer.appendChild(createMovieCard(item, index));
+            }
         });
 
         page++;
-        const hasMoreMovies = page <= data.total_pages;
-        loadMoreBtn.classList.toggle('hidden', !hasMoreMovies);
+        const hasMoreItems = page <= data.total_pages;
+        loadMoreBtn.classList.toggle('hidden', !hasMoreItems);
 
         AOS.refresh();
     } catch (error) {
-        console.error('Error loading action movies:', error);
+        console.error('Error loading movies and TV shows:', error);
         if (page === 1) {
-            movieContainer.innerHTML = '<p class="text-red-500">Error loading movies. Please try again.</p>';
+            movieContainer.innerHTML = '<p class="text-red-500">Error loading content. Please try again.</p>';
         }
     } finally {
         loadingIndicator.classList.add('hidden');
@@ -179,14 +181,14 @@ const updatePageTitle = () => {
     const genreFilter = document.getElementById('genreFilter');
     if (!pageTitle) return;
 
-    let titleText = 'Popular Movies';
+    let titleText = 'Popular Movies & TV Shows';
 
     if (searchQuery) {
         titleText = `Search Results for "${searchQuery}"`;
     } else if (currentGenre && genreFilter) {
         const selectedOption = Array.from(genreFilter.options).find(opt => opt.value === currentGenre);
         if (selectedOption) {
-            titleText = `${selectedOption.text} Movies`;
+            titleText = `${selectedOption.text} Movies & TV Shows`;
         }
     }
 
@@ -510,7 +512,7 @@ const setupSearch = () => {
         if (item.media_type === 'movie') {
             imageUrl = item.poster_path ? `${IMAGE_BASE_URL}${item.poster_path}` : null;
             title = item.title;
-            subtitle = `Movie (${item.release_date?.split('-')[0]})`;
+            subtitle = `Movie (${item.release_date?.split('-')[0] || 'N/A'})`;
             icon = 'fa-film';
         } else if (item.media_type === 'tv') {
             imageUrl = item.poster_path ? `${IMAGE_BASE_URL}${item.poster_path}` : null;
