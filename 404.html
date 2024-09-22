@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | CinemaScope</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @keyframes filmReel {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .film-reel {
+            animation: filmReel 10s linear infinite;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 min-h-screen flex items-center justify-center text-white">
+    <div class="container mx-auto px-4 text-center">
+        <div class="mb-8">
+            <i class="fas fa-film text-6xl film-reel"></i>
+        </div>
+        <h1
+            class="text-5xl md:text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+            404: Scene Not Found
+        </h1>
+        <p class="text-xl md:text-2xl mb-8">Oops! Looks like this reel has gone missing.</p>
+        <div class="space-y-4">
+            <p class="text-lg">Don't worry, our film crew is on it! In the meantime, why not explore these options:</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="index.html"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                    <i class="fas fa-home mr-2"></i>Return to Homepage
+                </a>
+            </div>
+        </div>
+        <div class="mt-12">
+            <p class="text-lg">Here's a movie quote to brighten your day:</p>
+            <blockquote class="italic text-xl mt-2">"I'm going to make him an offer he can't refuse."</blockquote>
+            <p class="text-sm mt-1">- The Godfather (1972)</p>
+        </div>
+        <div class="mt-12">
+            <a href="#" class="text-blue-400 hover:text-blue-300 transition duration-300">
+                <i class="fas fa-headset mr-2"></i>Contact Support
+            </a>
+        </div>
+    </div>
+    <script>
+        const quotes = [
+            { quote: "I'm going to make him an offer he can't refuse.", movie: "The Godfather (1972)" },
+            { quote: "May the Force be with you.", movie: "Star Wars (1977)" },
+            { quote: "You talkin' to me?", movie: "Taxi Driver (1976)" },
+            { quote: "E.T. phone home.", movie: "E.T. the Extra-Terrestrial (1982)" },
+            { quote: "Here's looking at you, kid.", movie: "Casablanca (1942)" },
+            { quote: "I see dead people.", movie: "The Sixth Sense (1999)" },
+            { quote: "You had me at 'hello'.", movie: "Jerry Maguire (1996)" },
+            { quote: "Show me the money!", movie: "Jerry Maguire (1996)" },
+            { quote: "Fasten your seatbelts. It's going to be a bumpy night.", movie: "All About Eve (1950)" },
+            { quote: "Nobody puts Baby in a corner.", movie: "Dirty Dancing (1987)" },
+            { quote: "I am serious... and don't call me Shirley.", movie: "Airplane! (1980)" },
+            { quote: "It's not the years, honey. It's the mileage.", movie: "Raiders of the Lost Ark (1981)" },
+            { quote: "We're gonna need a bigger boat.", movie: "Jaws (1975)" },
+            { quote: "You're gonna need a bigger map.", movie: "The Big Lebowski (1998)" },
+            { quote: "I am your father.", movie: "Star Wars: Episode V - The Empire Strikes Back (1980)" },
+        ];
+
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        document.querySelector('blockquote').textContent = `"${randomQuote.quote}"`;
+        document.querySelector('blockquote + p').textContent = `- ${randomQuote.movie}`;
+    </script>
+</body>
+
+</html>

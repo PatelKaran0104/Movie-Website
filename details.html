@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details - CinemaScope</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .modal-content {
+            background-color: #1a202c;
+            margin: 2% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 10px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+        }
+
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        #modalVideoContainer {
+            position: relative;
+            flex-grow: 1;
+            min-height: 0;
+        }
+
+        #modalMovieFrame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .modal-content {
+                margin: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+            }
+
+            .modal-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .modal-controls>* {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white">
+    <nav class="bg-gray-800 shadow-lg fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html"
+                        class="text-2xl font-bold text-white flex items-center hover:text-blue-400 transition duration-300">
+                        <i class="fas fa-film text-blue-500 mr-2"></i>
+                        <p class="text-2xl font-bold text-white">CinemaScope</p>
+                    </a>
+                </div>
+                <div>
+                    <a href="index.html"
+                        class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                        <i class="fas fa-chevron-left mr-2"></i>Back
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-24 min-h-screen">
+        <div id="loadingSpinner" class="flex justify-center items-center h-64">
+            <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+        <div id="detailsContainer" class="flex justify-center items-center h-full hidden">
+            <!-- Details will be dynamically added here -->
+        </div>
+        <!-- Movie Player Modal -->
+        <div id="movieModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="modalVideoContainer" class="relative flex-grow">
+                    <iframe id="modalMovieFrame" src="" frameborder="0" allowfullscreen allow="autoplay; fullscreen"
+                        class="w-full h-full"></iframe>
+                    <div id="loadingIndicator"
+                        class="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75">
+                        <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+                    </div>
+                </div>
+                <div class="modal-controls">
+                    <button id="modalFullscreenButton"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+                        <i class="fas fa-expand mr-2"></i>Fullscreen (F)
+                    </button>
+                    <div class="flex items-center">
+                        <label for="modalServerSelect" class="mr-4 text-lg">Switch Server:</label>
+                        <select id="modalServerSelect" class="bg-gray-700 text-white p-2 rounded-lg">
+                            <option value="vidsrc.me">Server 1 (vidsrc.me)</option>
+                            <option value="vidplay.online">Server 2 (vidplay.online)</option>
+                            <option value="vidsrc.xyz">Server 3 (vidsrc.xyz)</option>
+                            <option value="streamtape.com">Server 4 (streamtape.com)</option>
+                            <option value="doodstream.com">Server 5 (doodstream.com)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/screenfull.js/5.1.0/screenfull.min.js"></script>
+    <script src="details.js"></script>
+</body>
+
+</html>
