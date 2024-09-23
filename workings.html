@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link type="image/png" sizes="32x32" rel="icon" href="/asset/favicon.png">
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -62,7 +64,8 @@
                 <a href="index.html" class="nav-link text-gray-300 hover:text-white transition duration-300">Home</a>
                 <a href="index.html#recommendedMovies"
                     class="nav-link text-gray-300 hover:text-white transition duration-300">Recommendations</a>
-                <a href="index.html#genres" class="nav-link text-gray-300 hover:text-white transition duration-300">Genres</a>
+                <a href="index.html#genres"
+                    class="nav-link text-gray-300 hover:text-white transition duration-300">Genres</a>
                 <!-- <a href="index.html#latestMovies"
                     class="nav-link text-gray-300 hover:text-white transition duration-300">Latest</a> -->
                 <a href="index.html#subscriptionPlans"
@@ -78,7 +81,8 @@
             <a href="index.html" class="text-2xl text-white hover:text-blue-500 transition duration-300">Home</a>
             <a href="index.html#recommendedMovies"
                 class="text-2xl text-white hover:text-blue-500 transition duration-300">Recommendations</a>
-            <a href="index.html#genres" class="text-2xl text-white hover:text-blue-500 transition duration-300">Genres</a>
+            <a href="index.html#genres"
+                class="text-2xl text-white hover:text-blue-500 transition duration-300">Genres</a>
             <!-- <a href="index.html#latestMovies" class="text-2xl text-white hover:text-blue-500 transition duration-300">Latest</a> -->
             <a href="index.html#subscriptionPlans"
                 class="text-2xl text-white hover:text-blue-500 transition duration-300">Plans</a>
@@ -102,6 +106,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="feature-card rounded-lg p-6 text-center bg-gray-800" data-aos="fade-up"
                     data-aos-delay="100">
+                    <div class="status-icon absolute top-2 right-2 opacity-0 transition-opacity duration-300">
+                        <i class="fas fa-clock text-sm text-yellow-400"></i>
+                    </div>
                     <i class="fas fa-search text-4xl text-blue-500 mb-4"></i>
                     <h3 class="text-xl font-semibold mb-2">Intelligent Search</h3>
                     <p class="text-gray-400">Discover movies, TV shows, and actors with our advanced search algorithm.
@@ -109,6 +116,9 @@
                 </div>
                 <div class="feature-card rounded-lg p-6 text-center bg-gray-800" data-aos="fade-up"
                     data-aos-delay="200">
+                    <div class="status-icon absolute top-2 right-2 opacity-0 transition-opacity duration-300">
+                        <i class="fas fa-check text-sm text-yellow-400"></i>
+                    </div>
                     <i class="fas fa-film text-4xl text-green-500 mb-4"></i>
                     <h3 class="text-xl font-semibold mb-2">Personalized Recommendations</h3>
                     <p class="text-gray-400">Get tailored movie suggestions based on your unique taste and viewing
@@ -116,12 +126,18 @@
                 </div>
                 <div class="feature-card rounded-lg p-6 text-center bg-gray-800" data-aos="fade-up"
                     data-aos-delay="300">
+                    <div class="status-icon absolute top-2 right-2 opacity-0 transition-opacity duration-300">
+                        <i class="fas fa-clock text-sm text-yellow-400"></i>
+                    </div>
                     <i class="fas fa-star text-4xl text-yellow-500 mb-4"></i>
                     <h3 class="text-xl font-semibold mb-2">Community Reviews</h3>
                     <p class="text-gray-400">Rate, review, and explore opinions from fellow movie enthusiasts.</p>
                 </div>
                 <div class="feature-card rounded-lg p-6 text-center bg-gray-800" data-aos="fade-up"
                     data-aos-delay="400">
+                    <div class="status-icon absolute top-2 right-2 opacity-0 transition-opacity duration-300">
+                        <i class="fas fa-clock text-sm text-yellow-400"></i>
+                    </div>
                     <i class="fas fa-users text-4xl text-purple-500 mb-4"></i>
                     <h3 class="text-xl font-semibold mb-2">Vibrant Community</h3>
                     <p class="text-gray-400">Join discussions, create watchlists, and connect with like-minded movie
@@ -129,6 +145,9 @@
                 </div>
                 <div class="feature-card rounded-lg p-6 text-center bg-gray-800" data-aos="fade-up"
                     data-aos-delay="500">
+                    <div class="status-icon absolute top-2 right-2 opacity-0 transition-opacity duration-300">
+                        <i class="fas fa-check text-sm text-yellow-400"></i>
+                    </div>
                     <i class="fas fa-cogs text-4xl text-red-500 mb-4"></i>
                     <h3 class="text-xl font-semibold mb-2">Advanced Filters</h3>
                     <p class="text-gray-400">Fine-tune your movie discovery with genre, year, rating, and more advanced
@@ -136,6 +155,9 @@
                 </div>
                 <div class="feature-card rounded-lg p-6 text-center bg-gray-800" data-aos="fade-up"
                     data-aos-delay="600">
+                    <div class="status-icon absolute top-2 right-2 opacity-0 transition-opacity duration-300">
+                        <i class="fas fa-clock text-sm text-yellow-400"></i>
+                    </div>
                     <i class="fas fa-envelope text-4xl text-blue-500 mb-4"></i>
                     <h3 class="text-xl font-semibold mb-2">Curated Updates</h3>
                     <p class="text-gray-400">Stay informed with personalized newsletters featuring the latest in cinema.

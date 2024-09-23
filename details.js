@@ -58,6 +58,34 @@ const loadMovieOrTVDetails = async (type, id, container) => {
     const credits = await fetchData(`${BASE_URL}/${type}/${id}/credits?language=en-US`);
     const videos = await fetchData(`${BASE_URL}/${type}/${id}/videos?language=en-US`);
 
+    let seasonsEpisodesHtml = '';
+
+    if (type === 'tv') {
+        const seasons = await fetchData(`${BASE_URL}/tv/${id}/season/1?language=en-US`);
+        seasonsEpisodesHtml = `
+            <div class="flex flex-wrap items-center gap-4 mt-6">
+                <div class="flex-grow md:flex-grow-0 w-full md:w-auto">
+                    <select id="seasonSelect" class="bg-gray-700 text-white rounded-md px-3 py-2 w-full">
+                        ${details.seasons.map(season => `<option value="${season.season_number}">${season.name}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="flex-grow md:flex-grow-0 w-full md:w-auto">
+                    <select id="episodeSelect" class="bg-gray-700 text-white rounded-md px-3 py-2 w-full">
+                        ${seasons.episodes.map(episode => {
+                            const truncatedName = episode.name.length > 30 ? episode.name.substring(0, 27) + '...' : episode.name;
+                            return `<option value="${episode.episode_number}">${episode.episode_number}. ${truncatedName}</option>`;
+                        }).join('')}
+                    </select>
+                </div>
+                <div class="w-full md:w-auto">
+                    <button id="watchEpisodeButton" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out flex items-center justify-center">
+                        <i class="fas fa-play mr-2"></i> Watch Episode
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
     container.innerHTML = `
         <div class="flex flex-col md:flex-row">
             <div class="md:w-1/3 mb-8 md:mb-0">
@@ -68,14 +96,16 @@ const loadMovieOrTVDetails = async (type, id, container) => {
                 <div class="hidden w-full h-full bg-gray-700 rounded-lg shadow-lg flex items-center justify-center text-white text-2xl font-bold p-4 text-center mb-4">
                     ${details.title || details.name}
                 </div>
-                <div class="flex space-x-2">
-                    <button id="trailerButton" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out flex items-center justify-center">
-                        <i class="fas fa-play mr-2"></i> Watch Trailer
-                    </button>
-                    <button id="watchMovieButton" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out flex items-center justify-center">
-                        <i class="fas fa-play mr-2"></i> Watch Movie
-                    </button>
-                </div>
+                ${type === 'movie' ? `
+                    <div class="flex space-x-2">
+                        <button id="trailerButton" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out flex items-center justify-center">
+                            <i class="fas fa-play mr-2"></i> Watch Trailer
+                        </button>
+                        <button id="watchMovieButton" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out flex items-center justify-center">
+                            <i class="fas fa-play mr-2"></i> Watch Movie
+                        </button>
+                    </div>
+                ` : ''}
             </div>
             <div class="md:w-2/3 md:pl-8">
                 <h1 class="text-4xl font-bold mb-4">${details.title || details.name}</h1>
@@ -84,7 +114,8 @@ const loadMovieOrTVDetails = async (type, id, container) => {
                 <p class="mb-4"><span class="font-semibold">Rating:</span> ${details.vote_average ? `${details.vote_average.toFixed(1)}/10` : 'N/A'}</p>
                 <p class="mb-4"><span class="font-semibold">Genres:</span> ${details.genres ? details.genres.map(genre => genre.name).join(', ') : 'N/A'}</p>
                 <p class="mb-8"><span class="font-semibold">Overview:</span> ${details.overview || 'No overview available'}</p>
-                <h2 class="text-3xl font-bold mb-6">Cast</h2>
+                ${seasonsEpisodesHtml}
+                <h2 class="text-3xl font-bold mb-6 mt-8">Cast</h2>
                 <div class="cast-grid">
                     ${credits.cast.slice(0, 10).map(actor => `
                         <div class="cast-item">
@@ -106,24 +137,45 @@ const loadMovieOrTVDetails = async (type, id, container) => {
         </div>
     `;
 
-    // Add event listener for trailer button
-    const trailerButton = document.getElementById('trailerButton');
-    const trailer = videos.results.find(video => video.type === 'Trailer');
+    if (type === 'movie') {
+        // Add event listener for trailer button
+        const trailerButton = document.getElementById('trailerButton');
+        const trailer = videos.results.find(video => video.type === 'Trailer');
 
-    if (trailer) {
-        trailerButton.addEventListener('click', () => {
-            window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank');
+        if (trailer) {
+            trailerButton.addEventListener('click', () => {
+                window.open(`https://www.youtube.com/watch?v=${trailer.key}`, '_blank');
+            });
+        } else {
+            trailerButton.disabled = true;
+            trailerButton.textContent = 'No Trailer Available';
+            trailerButton.classList.add('bg-gray-500', 'cursor-not-allowed');
+            trailerButton.classList.remove('bg-red-600', 'hover:bg-red-700');
+        }
+
+        // Add event listener for watch movie button
+        const watchMovieButton = document.getElementById('watchMovieButton');
+        watchMovieButton.addEventListener('click', openMovieModal);
+    } else if (type === 'tv') {
+        // Add event listeners for season and episode selects
+        const seasonSelect = document.getElementById('seasonSelect');
+        const episodeSelect = document.getElementById('episodeSelect');
+        const watchEpisodeButton = document.getElementById('watchEpisodeButton');
+
+        seasonSelect.addEventListener('change', async () => {
+            const selectedSeason = seasonSelect.value;
+            const episodes = await fetchData(`${BASE_URL}/tv/${id}/season/${selectedSeason}?language=en-US`);
+            episodeSelect.innerHTML = episodes.episodes.map(episode => {
+                const truncatedName = episode.name.length > 30 ? episode.name.substring(0, 27) + '...' : episode.name;
+                return `<option value="${episode.episode_number}">${episode.episode_number}. ${truncatedName}</option>`;
+            }).join('');
         });
-    } else {
-        trailerButton.disabled = true;
-        trailerButton.textContent = 'No Trailer Available';
-        trailerButton.classList.add('bg-gray-500', 'cursor-not-allowed');
-        trailerButton.classList.remove('bg-red-600', 'hover:bg-red-700');
-    }
 
-    // Add event listener for watch movie button
-    const watchMovieButton = document.getElementById('watchMovieButton');
-    watchMovieButton.addEventListener('click', openMovieModal);
+        watchEpisodeButton.addEventListener('click', () => {
+            const tvId = currentMovieId;
+            openTVModal(tvId);
+        });
+    }
 };
 
 const loadPersonDetails = async (id, container) => {
@@ -239,6 +291,80 @@ const openMovieModal = () => {
     modalMovieFrame.onerror = () => {
         loadingIndicator.style.display = 'none';
         displayErrorInModal('Failed to load the movie. Please try another server.');
+    };
+
+    // Keyboard shortcuts
+    const handleKeyPress = (event) => {
+        if (event.key === 'Escape') {
+            closeModal();
+        } else if (event.key === 'f' || event.key === 'F') {
+            toggleFullscreen();
+        }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+
+    // Clean up event listener when modal is closed
+    const cleanup = () => {
+        document.removeEventListener('keydown', handleKeyPress);
+    };
+
+    modal.addEventListener('hidden.bs.modal', cleanup);
+};
+
+const openTVModal = (tvId) => {
+    const modal = document.getElementById('movieModal');
+    const modalMovieFrame = document.getElementById('modalMovieFrame');
+    const modalServerSelect = document.getElementById('modalServerSelect');
+    const modalFullscreenButton = document.getElementById('modalFullscreenButton');
+    const closeBtn = document.getElementsByClassName('close')[0];
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const seasonSelect = document.getElementById('seasonSelect');
+    const episodeSelect = document.getElementById('episodeSelect');
+
+    modalMovieFrame.style.display = 'none';
+    loadingIndicator.style.display = 'flex';
+
+    const season = seasonSelect.value;
+    const episode = episodeSelect.value;
+    
+    modalMovieFrame.src = `https://vidsrc.to/embed/tv/${tvId}/${season}/${episode}`;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    modalServerSelect.value = selectedServer;
+    modalServerSelect.addEventListener('change', (event) => {
+        selectedServer = event.target.value;
+        modalMovieFrame.style.display = 'none';
+        loadingIndicator.style.display = 'flex';
+        modalMovieFrame.src = `https://vidsrc.to/embed/tv/${tvId}/${season}/${episode}`;
+    });
+
+    modalFullscreenButton.addEventListener('click', toggleFullscreen);
+
+    const closeModal = () => {
+        modal.style.display = 'none';
+        modalMovieFrame.src = '';
+        document.body.style.overflow = '';
+    };
+
+    closeBtn.onclick = closeModal;
+
+    window.onclick = (event) => {
+        if (event.target == modal) {
+            closeModal();
+        }
+    };
+
+    // Handle iframe load events
+    modalMovieFrame.onload = () => {
+        modalMovieFrame.style.display = 'block';
+        loadingIndicator.style.display = 'none';
+    };
+
+    modalMovieFrame.onerror = () => {
+        loadingIndicator.style.display = 'none';
+        displayErrorInModal('Failed to load the episode. Please try another server.');
     };
 
     // Keyboard shortcuts
