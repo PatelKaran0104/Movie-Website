@@ -211,6 +211,7 @@ const loadPersonDetails = async (id, container) => {
                     <p id="fullBio" class="hidden">${person.biography || 'No biography available'}</p>
                     ${person.biography.length > 300 ? `
                         <button id="readMoreBtn" class="text-blue-500 hover:text-blue-600 mt-2">Read More</button>
+                        <button id="readLessBtn" class="text-blue-500 hover:text-blue-600 mt-2 hidden">Read Less</button>
                     ` : ''}
                 </div>
                 <h2 class="text-3xl font-bold mb-6">Top 10 Movie Credits</h2>
@@ -235,11 +236,22 @@ const loadPersonDetails = async (id, container) => {
 
     // Add event listener for Read More button
     const readMoreBtn = document.getElementById('readMoreBtn');
+    const readLessBtn = document.getElementById('readLessBtn');
     if (readMoreBtn) {
         readMoreBtn.addEventListener('click', () => {
             document.getElementById('shortBio').classList.add('hidden');
             document.getElementById('fullBio').classList.remove('hidden');
             readMoreBtn.classList.add('hidden');
+            readLessBtn.classList.remove('hidden');
+        });
+    }
+
+    if (readLessBtn) {
+        readLessBtn.addEventListener('click', () => {
+            document.getElementById('shortBio').classList.remove('hidden');
+            document.getElementById('fullBio').classList.add('hidden');
+            readMoreBtn.classList.remove('hidden');
+            readLessBtn.classList.add('hidden');
         });
     }
 };
